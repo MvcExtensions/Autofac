@@ -7,15 +7,10 @@
 
 namespace MvcExtensions.Autofac.Tests
 {
-    using System;
-
-    using Microsoft.Practices.ServiceLocation;
-
     using Moq;
     using Xunit;
 
     using IComponentRegistry = global::Autofac.Core.IComponentRegistry;
-    using IContainer = global::Autofac.IContainer;
     using IModule = global::Autofac.Core.IModule;
 
     public class AutofacBootstrapperTests
@@ -34,28 +29,25 @@ namespace MvcExtensions.Autofac.Tests
         [Fact]
         public void Should_be_able_to_load_modules()
         {
+            var buildManager = new Mock<IBuildManager>();
+            buildManager.SetupGet(bm => bm.ConcreteTypes).Returns(new[] { typeof(DummyModule) });
+
+            DummyModule.Configured = false;
+
+            var bootstrapper = new AutofacBootstrapper(buildManager.Object);
+
+            Assert.NotNull(bootstrapper.ServiceLocator);
+
+            Assert.True(DummyModule.Configured);
         }
 
         private sealed class DummyModule : IModule
         {
+            public static bool Configured { get; set; }
+
             public void Configure(IComponentRegistry componentRegistry)
             {
-                throw new NotImplementedException();
-            }
-        }
-
-        private sealed class AutofacBootstrapperTestDouble : AutofacBootstrapper
-        {
-            private readonly IContainer container;
-
-            public AutofacBootstrapperTestDouble(IContainer container, IBuildManager buildManager) : base(buildManager)
-            {
-                this.container = container;
-            }
-
-            protected override IServiceLocator CreateServiceLocator()
-            {
-                return new AutofacAdapter(container);
+                Configured = true;
             }
         }
     }

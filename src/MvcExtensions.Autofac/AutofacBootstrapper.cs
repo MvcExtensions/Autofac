@@ -9,6 +9,7 @@ namespace MvcExtensions.Autofac
 {
     using System;
     using System.Linq;
+    using System.Web;
 
     using Microsoft.Practices.ServiceLocation;
 
@@ -39,6 +40,10 @@ namespace MvcExtensions.Autofac
         protected override IServiceLocator CreateServiceLocator()
         {
             ContainerBuilder builder = new ContainerBuilder();
+
+            RegisterExtension.Register(builder, c => new HttpContextWrapper(HttpContext.Current))
+                             .As<HttpContextBase>()
+                             .InstancePerDependency();
 
             AutofacAdapter adapter = new AutofacAdapter(builder.Build());
 

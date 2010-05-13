@@ -102,6 +102,8 @@ namespace MvcExtensions.Autofac
                 registration.InstancePerDependency();
             }
 
+            builder.Update(Container);
+
             return this;
         }
 
@@ -125,7 +127,7 @@ namespace MvcExtensions.Autofac
             }
             else
             {
-                RegisterExtension.RegisterInstance(builder, instance).As(serviceType).ExternallyOwned().Named(key, serviceType);
+                RegisterExtension.RegisterInstance(builder, instance).Named(key, serviceType).As(serviceType).ExternallyOwned();
             }
 
             builder.Update(Container);
@@ -165,11 +167,9 @@ namespace MvcExtensions.Autofac
         {
             Type type = typeof(IEnumerable<>).MakeGenericType(serviceType);
 
-            object instances;
+            object instances = ResolveExtension.Resolve(Container, type);
 
-            return ResolveExtension.TryResolve(Container, type, out instances) ?
-                   ((IEnumerable)instances).Cast<object>() :
-                   Enumerable.Empty<object>();
+            return ((IEnumerable)instances).Cast<object>();
         }
 
         /// <summary>
