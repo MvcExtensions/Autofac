@@ -17,6 +17,7 @@ namespace MvcExtensions.Autofac
 
     using ContainerBuilder = global::Autofac.ContainerBuilder;
     using IContainer = global::Autofac.IContainer;
+    using PerRequestScopedRegistration = global::Autofac.PerRequestScopedRegistration;
     using RegisterExtension = global::Autofac.RegistrationExtensions;
     using ResolveExtension = global::Autofac.ResolutionExtensions;
 
@@ -91,7 +92,7 @@ namespace MvcExtensions.Autofac
 
             if (lifetime == LifetimeType.PerRequest)
             {
-                registration.PerRequestScoped();
+                PerRequestScopedRegistration.PerRequestScoped(registration);
             }
             else if (lifetime == LifetimeType.Singleton)
             {

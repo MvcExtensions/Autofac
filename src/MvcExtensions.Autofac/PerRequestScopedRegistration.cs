@@ -5,13 +5,16 @@
 // All other rights reserved.
 #endregion
 
-namespace MvcExtensions.Autofac
+namespace Autofac
 {
+    using Builder;
+
+    using MvcExtensions;
+
     /// <summary>
-    /// This is copied from Autofac source code, Only the namespace is changed.
-    /// Extends registration syntax for common web scenarios.
+    /// Extends registration syntax for per web request scenario.
     /// </summary>
-    public static class RegistrationExtensions
+    public static class PerRequestScopedRegistration
     {
         /// <summary>
         /// Share one instance of the component within the context of a single
@@ -22,7 +25,7 @@ namespace MvcExtensions.Autofac
         /// <typeparam name="TActivatorData">Activator data type.</typeparam>
         /// <param name="registration">The registration to configure.</param>
         /// <returns>A registration builder allowing further configuration of the component.</returns>
-        public static global::Autofac.Builder.IRegistrationBuilder<TLimit, TActivatorData, TStyle> PerRequestScoped<TLimit, TActivatorData, TStyle>(this global::Autofac.Builder.IRegistrationBuilder<TLimit, TActivatorData, TStyle> registration)
+        public static IRegistrationBuilder<TLimit, TActivatorData, TStyle> PerRequestScoped<TLimit, TActivatorData, TStyle>(this IRegistrationBuilder<TLimit, TActivatorData, TStyle> registration)
         {
             Invariant.IsNotNull(registration, "registration");
 
