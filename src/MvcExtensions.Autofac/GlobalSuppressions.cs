@@ -15,4 +15,5 @@
 // All other rights reserved.
 #endregion
 
+[assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope", Scope = "member", Target = "MvcExtensions.Autofac.AutofacBootstrapper.#CreateServiceLocator()")]
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA2210:AssembliesShouldHaveValidStrongNames")]

@@ -63,6 +63,8 @@
       <Link>Properties\CommonAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="AutofacAdapter.cs" />
+    <Compile Include="AutofacBootstrapper.cs" />
+    <Compile Include="AutofacMvcApplication.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
