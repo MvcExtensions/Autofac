@@ -90,17 +90,17 @@ namespace MvcExtensions.Autofac
                 registration = registration.Named(key, serviceType);
             }
 
-            if (lifetime == LifetimeType.PerRequest)
+            switch (lifetime)
             {
-                PerRequestScopedRegistration.PerRequestScoped(registration);
-            }
-            else if (lifetime == LifetimeType.Singleton)
-            {
-                registration.SingleInstance();
-            }
-            else
-            {
-                registration.InstancePerDependency();
+                case LifetimeType.PerRequest:
+                    PerRequestScopedRegistration.PerRequestScoped(registration);
+                    break;
+                case LifetimeType.Singleton:
+                    registration.SingleInstance();
+                    break;
+                default:
+                    registration.InstancePerDependency();
+                    break;
             }
 
             builder.Update(Container);
