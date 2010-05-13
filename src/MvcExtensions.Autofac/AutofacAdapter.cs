@@ -80,6 +80,28 @@ namespace MvcExtensions.Autofac
             Invariant.IsNotNull(serviceType, "serviceType");
             Invariant.IsNotNull(implementationType, "implementationType");
 
+            ContainerBuilder builder = new ContainerBuilder();
+
+            var registration = RegisterExtension.RegisterType(builder, implementationType).As(serviceType);
+
+            if (!string.IsNullOrEmpty(key))
+            {
+                registration = registration.Named(key, serviceType);
+            }
+
+            if (lifetime == LifetimeType.PerRequest)
+            {
+                registration.PerRequestScoped();
+            }
+            else if (lifetime == LifetimeType.Singleton)
+            {
+                registration.SingleInstance();
+            }
+            else
+            {
+                registration.InstancePerDependency();
+            }
+
             return this;
         }
 
