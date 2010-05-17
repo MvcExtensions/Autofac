@@ -14,7 +14,7 @@ namespace MvcExtensions.Autofac
     using Microsoft.Practices.ServiceLocation;
 
     using ContainerBuilder = global::Autofac.ContainerBuilder;
-    using IContainer = global::Autofac.IContainer;
+    using ILifetimeScope = global::Autofac.ILifetimeScope;
     using IModule = global::Autofac.Core.IModule;
     using RegisterExtension = global::Autofac.RegistrationExtensions;
 
@@ -61,9 +61,9 @@ namespace MvcExtensions.Autofac
                         .Where(type => moduleType.IsAssignableFrom(type) && type.HasDefaultConstructor())
                         .Each(type => RegisterExtension.RegisterModule(builder, Activator.CreateInstance(type) as IModule));
 
-            IContainer container = ((AutofacAdapter)ServiceLocator).Container;
+            ILifetimeScope container = ((AutofacAdapter)ServiceLocator).Container;
 
-            builder.Update(container);
+            builder.Update(container.ComponentRegistry);
         }
     }
 }

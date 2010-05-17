@@ -68,6 +68,7 @@
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="PerRequestScopedRegistration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="WebLifetime.cs" />
   </ItemGroup>
   <ItemGroup>
     <CodeAnalysisDictionary Include="..\SharedFiles\CodeAnalysisDictionary.xml" />

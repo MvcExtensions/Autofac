@@ -16,13 +16,13 @@ namespace MvcExtensions.Autofac
     using Microsoft.Practices.ServiceLocation;
 
     using ContainerBuilder = global::Autofac.ContainerBuilder;
-    using IContainer = global::Autofac.IContainer;
+    using ILifetimeScope = global::Autofac.ILifetimeScope;
     using PerRequestScopedRegistration = global::Autofac.PerRequestScopedRegistration;
-    using RegisterExtension = global::Autofac.RegistrationExtensions;
-    using ResolveExtension = global::Autofac.ResolutionExtensions;
+    using RegisterExtensions = global::Autofac.RegistrationExtensions;
+    using ResolutionExtensions = global::Autofac.ResolutionExtensions;
 
     /// <summary>
-    /// Defines an adapter class which with backed by Autofac <seealso cref="Container">Container</seealso>.
+    /// Defines an adapter class which is backed by Autofac <seealso cref="Container">Container</seealso>.
     /// </summary>
     public class AutofacAdapter : ServiceLocatorImplBase, IServiceRegistrar, IServiceInjector, IDisposable
     {
@@ -32,7 +32,7 @@ namespace MvcExtensions.Autofac
         /// Initializes a new instance of the <see cref="AutofacAdapter"/> class.
         /// </summary>
         /// <param name="container">The container.</param>
-        public AutofacAdapter(IContainer container)
+        public AutofacAdapter(ILifetimeScope container)
         {
             Invariant.IsNotNull(container, "container");
 
@@ -53,7 +53,7 @@ namespace MvcExtensions.Autofac
         /// Gets the container.
         /// </summary>
         /// <value>The container.</value>
-        public IContainer Container
+        public ILifetimeScope Container
         {
             get;
             private set;
@@ -83,7 +83,7 @@ namespace MvcExtensions.Autofac
 
             ContainerBuilder builder = new ContainerBuilder();
 
-            var registration = RegisterExtension.RegisterType(builder, implementationType).As(serviceType);
+            var registration = RegisterExtensions.RegisterType(builder, implementationType).As(serviceType);
 
             if (!string.IsNullOrEmpty(key))
             {
@@ -103,7 +103,7 @@ namespace MvcExtensions.Autofac
                     break;
             }
 
-            builder.Update(Container);
+            builder.Update(Container.ComponentRegistry);
 
             return this;
         }
@@ -124,14 +124,14 @@ namespace MvcExtensions.Autofac
 
             if (string.IsNullOrEmpty(key))
             {
-                RegisterExtension.RegisterInstance(builder, instance).As(serviceType).ExternallyOwned();
+                RegisterExtensions.RegisterInstance(builder, instance).As(serviceType).ExternallyOwned();
             }
             else
             {
-                RegisterExtension.RegisterInstance(builder, instance).Named(key, serviceType).As(serviceType).ExternallyOwned();
+                RegisterExtensions.RegisterInstance(builder, instance).Named(key, serviceType).As(serviceType).ExternallyOwned();
             }
 
-            builder.Update(Container);
+            builder.Update(Container.ComponentRegistry);
 
             return this;
         }
@@ -144,7 +144,7 @@ namespace MvcExtensions.Autofac
         {
             if (instance != null)
             {
-                ResolveExtension.InjectUnsetProperties(Container, instance);
+                ResolutionExtensions.InjectUnsetProperties(Container, instance);
             }
         }
 
@@ -156,7 +156,7 @@ namespace MvcExtensions.Autofac
         /// <returns></returns>
         protected override object DoGetInstance(Type serviceType, string key)
         {
-            return key != null ? ResolveExtension.Resolve(Container, key, serviceType) : ResolveExtension.Resolve(Container, serviceType);
+            return key != null ? ResolutionExtensions.Resolve(Container, key, serviceType) : ResolutionExtensions.Resolve(Container, serviceType);
         }
 
         /// <summary>
@@ -168,7 +168,7 @@ namespace MvcExtensions.Autofac
         {
             Type type = typeof(IEnumerable<>).MakeGenericType(serviceType);
 
-            object instances = ResolveExtension.Resolve(Container, type);
+            object instances = ResolutionExtensions.Resolve(Container, type);
 
             return ((IEnumerable)instances).Cast<object>();
         }

@@ -10,6 +10,7 @@ namespace Autofac
     using Builder;
 
     using MvcExtensions;
+    using MvcExtensions.Autofac;
 
     /// <summary>
     /// Extends registration syntax for per web request scenario.
@@ -29,7 +30,7 @@ namespace Autofac
         {
             Invariant.IsNotNull(registration, "registration");
 
-            return registration.InstancePerMatchingLifetimeScope("httpRequest");
+            return registration.InstancePerMatchingLifetimeScope(WebLifetime.Request);
         }
     }
 }
