@@ -12,8 +12,6 @@ namespace MvcExtensions.Autofac
 
     using Microsoft.Practices.ServiceLocation;
 
-    using ILifetimeScope = global::Autofac.ILifetimeScope;
-
     /// <summary>
     /// Defines a <see cref="HttpApplication"/> which is uses <seealso cref="AutofacBootstrapper"/>.
     /// </summary>
@@ -21,16 +19,26 @@ namespace MvcExtensions.Autofac
     {
         private static readonly Type httpContextKey = typeof(AutofacAdapter);
 
-        private AutofacAdapter CurrentAdapter
+        private AutofacAdapter ApplicationAdapter
         {
             get
             {
-                return Context.Items.Contains(httpContextKey) ? (AutofacAdapter)Context.Items[httpContextKey] : null;
+                return (AutofacAdapter) Bootstrapper.ServiceLocator;
+            }
+        }
+
+        private IDisposable CurrentAdapter
+        {
+            get
+            {
+                HttpContextBase context = ApplicationAdapter.GetInstance<HttpContextBase>();
+
+                return context.Items.Contains(httpContextKey) ? (IDisposable)context.Items[httpContextKey] : null;
             }
 
             set
             {
-                Context.Items[httpContextKey] = value;
+                ApplicationAdapter.GetInstance<HttpContextBase>().Items[httpContextKey] = value;
             }
         }
 
@@ -56,7 +64,7 @@ namespace MvcExtensions.Autofac
         /// </summary>
         protected override void OnPerRequestTasksDisposed()
         {
-            AutofacAdapter adapter = CurrentAdapter;
+            IDisposable adapter = CurrentAdapter;
 
             if (adapter != null)
             {
@@ -66,17 +74,9 @@ namespace MvcExtensions.Autofac
 
         private IServiceLocator GetLocator()
         {
-            AutofacAdapter currentLocator = CurrentAdapter;
+            Func<AutofacAdapter> createNew = () => new AutofacAdapter(ApplicationAdapter.Container.BeginLifetimeScope(WebLifetime.Request));
 
-            if (currentLocator == null)
-            {
-                ILifetimeScope scope = ((AutofacAdapter)Bootstrapper.ServiceLocator).Container.BeginLifetimeScope(WebLifetime.Request);
-                currentLocator = new AutofacAdapter(scope);
-
-                CurrentAdapter = currentLocator;
-            }
-
-            return currentLocator;
+            return (CurrentAdapter ?? (CurrentAdapter = createNew())) as IServiceLocator;
         }
     }
 }

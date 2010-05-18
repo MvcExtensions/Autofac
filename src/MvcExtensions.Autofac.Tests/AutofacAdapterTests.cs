@@ -16,7 +16,7 @@ namespace MvcExtensions.Autofac.Tests
     using ContainerBuilder = global::Autofac.ContainerBuilder;
     using CurrentScopeLifetime = global::Autofac.Core.Lifetime.CurrentScopeLifetime;
     using IComponentRegistration = global::Autofac.Core.IComponentRegistration;
-    using IContainer = global::Autofac.IContainer;
+    using ILifetimeScope = global::Autofac.ILifetimeScope;
     using InstanceOwnership = global::Autofac.Core.InstanceOwnership;
     using InstanceSharing = global::Autofac.Core.InstanceSharing;
     using MatchingScopeLifetime = global::Autofac.Core.Lifetime.MatchingScopeLifetime;
@@ -36,14 +36,14 @@ namespace MvcExtensions.Autofac.Tests
         [Fact]
         public void Dispose_should_also_dispose_container()
         {
-            var container = new Mock<IContainer>();
-            var localAdapter = new AutofacAdapter(container.Object);
+            var lifetimeScope = new Mock<ILifetimeScope>();
+            var localAdapter = new AutofacAdapter(lifetimeScope.Object);
 
-            container.Setup(c => c.Dispose());
+            lifetimeScope.Setup(c => c.Dispose());
 
             localAdapter.Dispose();
 
-            container.VerifyAll();
+            lifetimeScope.VerifyAll();
         }
 
         [Fact]
