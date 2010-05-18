@@ -18,8 +18,8 @@ namespace MvcExtensions.Autofac.Tests
 
     using Microsoft.Practices.ServiceLocation;
 
-    using ILifetimeScope = global::Autofac.ILifetimeScope;
     using ContainerBuilder = global::Autofac.ContainerBuilder;
+    using ILifetimeScope = global::Autofac.ILifetimeScope;
 
     public class AutofacMvcApplicationTests
     {

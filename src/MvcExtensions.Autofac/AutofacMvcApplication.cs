@@ -23,7 +23,7 @@ namespace MvcExtensions.Autofac
         {
             get
             {
-                return (AutofacAdapter) Bootstrapper.ServiceLocator;
+                return (AutofacAdapter)Bootstrapper.ServiceLocator;
             }
         }
 
