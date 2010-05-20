@@ -11,6 +11,8 @@ namespace MvcExtensions.Autofac
     using System.Web;
 
     using Microsoft.Practices.ServiceLocation;
+    using ContainerBuilder = global::Autofac.ContainerBuilder;
+    using RegisterExtensions = global::Autofac.RegistrationExtensions;
 
     /// <summary>
     /// Defines a <see cref="HttpApplication"/> which is uses <seealso cref="AutofacBootstrapper"/>.
@@ -74,7 +76,21 @@ namespace MvcExtensions.Autofac
 
         private IServiceLocator GetLocator()
         {
-            Func<AutofacAdapter> createNew = () => new AutofacAdapter(ApplicationAdapter.Container.BeginLifetimeScope(WebLifetime.Request));
+            Func<AutofacAdapter> createNew = () =>
+                                                 {
+                                                     AutofacAdapter adapter = new AutofacAdapter(ApplicationAdapter.Container.BeginLifetimeScope(WebLifetime.Request));
+
+                                                     ContainerBuilder builder = new ContainerBuilder();
+
+                                                     RegisterExtensions.RegisterInstance(builder, adapter).As<IServiceRegistrar>();
+                                                     RegisterExtensions.RegisterInstance(builder, adapter).As<IServiceLocator>();
+                                                     RegisterExtensions.RegisterInstance(builder, adapter).As<IServiceInjector>();
+                                                     RegisterExtensions.RegisterInstance(builder, adapter).As<ContainerAdapter>();
+
+                                                     builder.Update(adapter.Container.ComponentRegistry);
+
+                                                     return adapter;
+                                                 };
 
             return (CurrentAdapter ?? (CurrentAdapter = createNew())) as IServiceLocator;
         }

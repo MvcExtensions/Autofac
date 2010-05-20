@@ -26,6 +26,12 @@ namespace MvcExtensions.Autofac.Tests
         private static readonly FieldInfo privateBootStrapper = typeof(ExtendedMvcApplication).GetFields(BindingFlags.Static | BindingFlags.NonPublic).Single(f => f.Name == "bootstrapper");
 
         [Fact]
+        public void Should_be_able_to_create_bootstrapper()
+        {
+            Assert.NotNull(new AutofacMvcApplicationTestDouble(null).PublicCreateBootstrapper());
+        }
+
+        [Fact]
         public void Should_set_adapter_when_application_starts()
         {
             var httpContext = new Mock<HttpContextBase>();
@@ -111,6 +117,11 @@ namespace MvcExtensions.Autofac.Tests
             public void CompleteRequest(HttpContextBase context)
             {
                 OnEndRequest(context);
+            }
+
+            public IBootstrapper PublicCreateBootstrapper()
+            {
+                return base.CreateBootstrapper();
             }
 
             protected override IBootstrapper CreateBootstrapper()
