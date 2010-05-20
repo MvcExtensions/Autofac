@@ -26,7 +26,7 @@ namespace MvcExtensions.Autofac.Tests
         private static readonly FieldInfo privateBootStrapper = typeof(ExtendedMvcApplication).GetFields(BindingFlags.Static | BindingFlags.NonPublic).Single(f => f.Name == "bootstrapper");
 
         [Fact]
-        public void Should_set_service_locator_when_application_starts()
+        public void Should_set_adapter_when_application_starts()
         {
             var httpContext = new Mock<HttpContextBase>();
             httpContext.SetupGet(c => c.Items).Returns(new Hashtable());
@@ -41,7 +41,7 @@ namespace MvcExtensions.Autofac.Tests
         }
 
         [Fact]
-        public void ServiceLocator_should_be_same_for_same_request()
+        public void Adapter_should_be_same_for_same_request()
         {
             var httpContext = new Mock<HttpContextBase>();
             httpContext.SetupGet(c => c.Items).Returns(new Hashtable());
@@ -73,11 +73,11 @@ namespace MvcExtensions.Autofac.Tests
             SetBootstrapperToNull(httpApplication);
         }
 
-        private static AutofacMvcApplicationTestDouble SetupApplication(IServiceLocator adapter)
+        private static AutofacMvcApplicationTestDouble SetupApplication(ContainerAdapter adapter)
         {
             var bootstrapper = new Mock<IBootstrapper>();
 
-            bootstrapper.SetupGet(bs => bs.ServiceLocator).Returns(adapter);
+            bootstrapper.SetupGet(bs => bs.Adapter).Returns(adapter);
 
             return new AutofacMvcApplicationTestDouble(bootstrapper.Object);
         }

@@ -7,8 +7,6 @@
 
 namespace MvcExtensions.Autofac.Tests
 {
-    using System;
-
     using Moq;
     using Xunit;
     using Xunit.Extensions;
@@ -26,7 +24,7 @@ namespace MvcExtensions.Autofac.Tests
 
     public class AutofacAdapterTests
     {
-        private AutofacAdapter adapter;
+        private readonly AutofacAdapter adapter;
 
         public AutofacAdapterTests()
         {
@@ -44,15 +42,6 @@ namespace MvcExtensions.Autofac.Tests
             localAdapter.Dispose();
 
             lifetimeScope.VerifyAll();
-        }
-
-        [Fact]
-        public void Should_finalize()
-        {
-            adapter = null;
-
-            GC.Collect();
-            GC.WaitForPendingFinalizers();
         }
 
         [Theory]

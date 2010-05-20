@@ -16,14 +16,14 @@ namespace MvcExtensions.Autofac.Tests
     public class AutofacBootstrapperTests
     {
         [Fact]
-        public void Should_be_able_to_create_service_locator()
+        public void Should_be_able_to_create_adapter()
         {
             var buildManager = new Mock<IBuildManager>();
             buildManager.SetupGet(bm => bm.Assemblies).Returns(new[] { GetType().Assembly });
 
             var bootstrapper = new AutofacBootstrapper(buildManager.Object);
 
-            Assert.IsType<AutofacAdapter>(bootstrapper.ServiceLocator);
+            Assert.IsType<AutofacAdapter>(bootstrapper.Adapter);
         }
 
         [Fact]
@@ -36,7 +36,7 @@ namespace MvcExtensions.Autofac.Tests
 
             var bootstrapper = new AutofacBootstrapper(buildManager.Object);
 
-            Assert.NotNull(bootstrapper.ServiceLocator);
+            Assert.NotNull(bootstrapper.Adapter);
 
             Assert.True(DummyModule.Configured);
         }

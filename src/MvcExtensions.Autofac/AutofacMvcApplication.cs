@@ -23,7 +23,7 @@ namespace MvcExtensions.Autofac
         {
             get
             {
-                return (AutofacAdapter)Bootstrapper.ServiceLocator;
+                return (AutofacAdapter)Bootstrapper.Adapter;
             }
         }
 
@@ -60,7 +60,7 @@ namespace MvcExtensions.Autofac
         }
 
         /// <summary>
-        /// Executes after the registered <see cref="IPerRequestTask"/> disposes.
+        /// Executes after the registered <see cref="PerRequestTask"/> disposes.
         /// </summary>
         protected override void OnPerRequestTasksDisposed()
         {
