@@ -39,9 +39,7 @@ namespace MvcExtensions.Autofac
         {
             ContainerBuilder builder = new ContainerBuilder();
 
-            RegisterExtension.Register(builder, c => new HttpContextWrapper(HttpContext.Current))
-                             .As<HttpContextBase>()
-                             .InstancePerDependency();
+            RegisterExtension.Register(builder, c => new HttpContextWrapper(HttpContext.Current)).As<HttpContextBase>().InstancePerDependency();
 
             AutofacAdapter adapter = new AutofacAdapter(builder.Build());
 

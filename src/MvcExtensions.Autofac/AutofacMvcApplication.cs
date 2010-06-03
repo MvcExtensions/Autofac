@@ -29,13 +29,13 @@ namespace MvcExtensions.Autofac
             }
         }
 
-        private IDisposable CurrentAdapter
+        private ContainerAdapter CurrentAdapter
         {
             get
             {
                 HttpContextBase context = ApplicationAdapter.GetInstance<HttpContextBase>();
 
-                return context.Items.Contains(httpContextKey) ? (IDisposable)context.Items[httpContextKey] : null;
+                return context.Items.Contains(httpContextKey) ? (ContainerAdapter)context.Items[httpContextKey] : null;
             }
 
             set
@@ -58,7 +58,16 @@ namespace MvcExtensions.Autofac
         /// </summary>
         protected override void OnStart()
         {
-            ServiceLocator.SetLocatorProvider(GetLocator);
+            ServiceLocator.SetLocatorProvider(GetOrCreate);
+        }
+
+        /// <summary>
+        /// Gets the current adapter.
+        /// </summary>
+        /// <returns></returns>
+        protected override ContainerAdapter GetCurrentAdapter()
+        {
+            return GetOrCreate();
         }
 
         /// <summary>
@@ -66,7 +75,7 @@ namespace MvcExtensions.Autofac
         /// </summary>
         protected override void OnPerRequestTasksDisposed()
         {
-            IDisposable adapter = CurrentAdapter;
+            ContainerAdapter adapter = CurrentAdapter;
 
             if (adapter != null)
             {
@@ -74,11 +83,11 @@ namespace MvcExtensions.Autofac
             }
         }
 
-        private IServiceLocator GetLocator()
+        private ContainerAdapter GetOrCreate()
         {
             Func<AutofacAdapter> createNew = () =>
                                                  {
-                                                     AutofacAdapter adapter = new AutofacAdapter(ApplicationAdapter.Container.BeginLifetimeScope(WebLifetime.Request));
+                                                     AutofacAdapter adapter = new AutofacAdapter(ApplicationAdapter.Container.BeginLifetimeScope());
 
                                                      ContainerBuilder builder = new ContainerBuilder();
 
@@ -92,7 +101,7 @@ namespace MvcExtensions.Autofac
                                                      return adapter;
                                                  };
 
-            return (CurrentAdapter ?? (CurrentAdapter = createNew())) as IServiceLocator;
+            return CurrentAdapter ?? (CurrentAdapter = createNew());
         }
     }
 }

@@ -14,7 +14,6 @@ namespace MvcExtensions.Autofac
 
     using ContainerBuilder = global::Autofac.ContainerBuilder;
     using ILifetimeScope = global::Autofac.ILifetimeScope;
-    using PerRequestScopedRegistration = global::Autofac.PerRequestScopedRegistration;
     using RegisterExtensions = global::Autofac.RegistrationExtensions;
     using ResolutionExtensions = global::Autofac.ResolutionExtensions;
 
@@ -69,7 +68,7 @@ namespace MvcExtensions.Autofac
             switch (lifetime)
             {
                 case LifetimeType.PerRequest:
-                    PerRequestScopedRegistration.PerRequestScoped(registration);
+                    registration.InstancePerLifetimeScope();
                     break;
                 case LifetimeType.Singleton:
                     registration.SingleInstance();

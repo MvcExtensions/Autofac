@@ -9,6 +9,7 @@ namespace MvcExtensions.Autofac.Tests
 {
     using System;
     using System.Collections;
+    using System.Collections.Generic;
     using System.Linq;
     using System.Reflection;
     using System.Web;
@@ -64,17 +65,18 @@ namespace MvcExtensions.Autofac.Tests
         [Fact]
         public void On_end_request_should_dispose_per_request_adapter()
         {
-            var disposable = new Mock<IDisposable>();
-            disposable.Setup(d => d.Dispose()).Verifiable();
+            var perRequestAdapter = new ContainerAdapterTestDouble();
 
             var httpContext = new Mock<HttpContextBase>();
-            httpContext.SetupGet(c => c.Items).Returns(new Hashtable { { typeof(AutofacAdapter), disposable.Object } });
+            httpContext.SetupGet(c => c.Items).Returns(new Hashtable { { typeof(AutofacAdapter), perRequestAdapter } });
 
             var httpApplication = SetupApplication(SetupAdapter(httpContext.Object).Object);
 
+            ContainerAdapterTestDouble.Disposed = false;
+
             httpApplication.CompleteRequest(httpContext.Object);
 
-            disposable.Verify();
+            Assert.True(ContainerAdapterTestDouble.Disposed);
 
             SetBootstrapperToNull(httpApplication);
         }
@@ -91,7 +93,7 @@ namespace MvcExtensions.Autofac.Tests
         private static Mock<AutofacAdapter> SetupAdapter(HttpContextBase httpContext)
         {
             var lifetimeScope = new Mock<ILifetimeScope>();
-            lifetimeScope.Setup(ls => ls.BeginLifetimeScope(It.IsAny<string>())).Returns(new ContainerBuilder().Build());
+            lifetimeScope.Setup(ls => ls.BeginLifetimeScope()).Returns(new ContainerBuilder().Build());
 
             var adapter = new Mock<AutofacAdapter>(lifetimeScope.Object);
             adapter.Setup(a => a.GetInstance<HttpContextBase>()).Returns(httpContext);
@@ -127,6 +129,41 @@ namespace MvcExtensions.Autofac.Tests
             protected override IBootstrapper CreateBootstrapper()
             {
                 return bootstrapper;
+            }
+        }
+
+        private class ContainerAdapterTestDouble : ContainerAdapter
+        {
+            public static bool Disposed { get; set; }
+
+            public override IServiceRegistrar RegisterType(string key, Type serviceType, Type implementationType, LifetimeType lifetime)
+            {
+                return null;
+            }
+
+            public override IServiceRegistrar RegisterInstance(string key, Type serviceType, object instance)
+            {
+                return null;
+            }
+
+            public override void Inject(object instance)
+            {
+            }
+
+            protected override object DoGetInstance(Type serviceType, string key)
+            {
+                return null;
+            }
+
+            protected override IEnumerable<object> DoGetAllInstances(Type serviceType)
+            {
+                return new object[] { new Mock<PerRequestTask>().Object, new Mock<PerRequestTask>().Object };
+            }
+
+            protected override void DisposeCore()
+            {
+                base.DisposeCore();
+                Disposed = true;
             }
         }
     }

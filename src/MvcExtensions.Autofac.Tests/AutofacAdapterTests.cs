@@ -17,7 +17,6 @@ namespace MvcExtensions.Autofac.Tests
     using ILifetimeScope = global::Autofac.ILifetimeScope;
     using InstanceOwnership = global::Autofac.Core.InstanceOwnership;
     using InstanceSharing = global::Autofac.Core.InstanceSharing;
-    using MatchingScopeLifetime = global::Autofac.Core.Lifetime.MatchingScopeLifetime;
     using NamedService = global::Autofac.Core.NamedService;
     using RootScopeLifetime = global::Autofac.Core.Lifetime.RootScopeLifetime;
     using TypedService = global::Autofac.Core.TypedService;
@@ -61,7 +60,7 @@ namespace MvcExtensions.Autofac.Tests
             if (lifetime == LifetimeType.PerRequest)
             {
                 Assert.Equal(registration.Sharing, InstanceSharing.Shared);
-                Assert.IsType<MatchingScopeLifetime>(registration.Lifetime);
+                Assert.IsType<CurrentScopeLifetime>(registration.Lifetime);
             }
             else if (lifetime == LifetimeType.Singleton)
             {
