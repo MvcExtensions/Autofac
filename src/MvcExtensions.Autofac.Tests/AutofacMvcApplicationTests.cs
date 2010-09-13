@@ -17,8 +17,6 @@ namespace MvcExtensions.Autofac.Tests
     using Moq;
     using Xunit;
 
-    using Microsoft.Practices.ServiceLocation;
-
     using ContainerBuilder = global::Autofac.ContainerBuilder;
     using ILifetimeScope = global::Autofac.ILifetimeScope;
 

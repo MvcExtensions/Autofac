@@ -10,7 +10,6 @@ namespace MvcExtensions.Autofac
     using System;
     using System.Web;
 
-    using Microsoft.Practices.ServiceLocation;
     using ContainerBuilder = global::Autofac.ContainerBuilder;
     using RegisterExtensions = global::Autofac.RegistrationExtensions;
 
