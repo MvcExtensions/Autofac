@@ -8,9 +8,7 @@
 using System;
 using System.Reflection;
 using System.Runtime.InteropServices;
-using System.Security;
 
-[assembly: AllowPartiallyTrustedCallers]
 [assembly: AssemblyTitle("MvcExtensions.Autofac")]
 [assembly: AssemblyProduct("MvcExtensions.Autofac")]
 [assembly: CLSCompliant(true)]
