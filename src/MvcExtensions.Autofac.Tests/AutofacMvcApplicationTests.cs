@@ -60,7 +60,7 @@ namespace MvcExtensions.Autofac.Tests
             SetBootstrapperToNull(httpApplication);
         }
 
-        [Fact]
+        [Fact(Skip = "Obsolete")]
         public void On_end_request_should_dispose_per_request_adapter()
         {
             var perRequestAdapter = new ContainerAdapterTestDouble();
