@@ -17,7 +17,7 @@ namespace MvcExtensions.Autofac.Tests
     using ILifetimeScope = global::Autofac.ILifetimeScope;
     using InstanceOwnership = global::Autofac.Core.InstanceOwnership;
     using InstanceSharing = global::Autofac.Core.InstanceSharing;
-    using NamedService = global::Autofac.Core.NamedService;
+    using KeyedService = global::Autofac.Core.KeyedService;
     using RootScopeLifetime = global::Autofac.Core.Lifetime.RootScopeLifetime;
     using TypedService = global::Autofac.Core.TypedService;
 
@@ -90,7 +90,7 @@ namespace MvcExtensions.Autofac.Tests
             }
             else
             {
-                registry.TryGetRegistration(new NamedService(key, typeof(DummyObject)), out registration);
+                registry.TryGetRegistration(new KeyedService(key, typeof(DummyObject)), out registration);
             }
 
             Assert.NotNull(registration);
@@ -114,7 +114,7 @@ namespace MvcExtensions.Autofac.Tests
         {
             adapter.RegisterAsSingleton<DummyObject>();
 
-            Assert.NotNull(adapter.GetInstance<DummyObject>());
+            Assert.NotNull(adapter.GetService(typeof(DummyObject)));
         }
 
         [Fact]
@@ -122,7 +122,7 @@ namespace MvcExtensions.Autofac.Tests
         {
             adapter.RegisterType("foo", typeof(DummyObject), typeof(DummyObject), LifetimeType.Singleton);
 
-            Assert.NotNull(adapter.GetInstance<DummyObject>("foo"));
+            Assert.NotNull(adapter.GetService<DummyObject>("foo"));
         }
 
         [Fact]
@@ -130,7 +130,7 @@ namespace MvcExtensions.Autofac.Tests
         {
             adapter.RegisterAsTransient<DummyObject>();
 
-            var instances = adapter.GetAllInstances(typeof(DummyObject));
+            var instances = adapter.GetServices(typeof(DummyObject));
 
             Assert.NotEmpty(instances);
         }

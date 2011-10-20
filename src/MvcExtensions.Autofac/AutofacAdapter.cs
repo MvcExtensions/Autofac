@@ -56,7 +56,7 @@ namespace MvcExtensions.Autofac
             Invariant.IsNotNull(serviceType, "serviceType");
             Invariant.IsNotNull(implementationType, "implementationType");
 
-            ContainerBuilder builder = new ContainerBuilder();
+            var builder = new ContainerBuilder();
 
             var registration = RegisterExtensions.RegisterType(builder, implementationType).As(serviceType);
 
@@ -95,7 +95,7 @@ namespace MvcExtensions.Autofac
             Invariant.IsNotNull(serviceType, "serviceType");
             Invariant.IsNotNull(instance, "instance");
 
-            ContainerBuilder builder = new ContainerBuilder();
+            var builder = new ContainerBuilder();
 
             if (string.IsNullOrEmpty(key))
             {
@@ -129,9 +129,9 @@ namespace MvcExtensions.Autofac
         /// <param name="serviceType">Type of the service.</param>
         /// <param name="key">The key.</param>
         /// <returns></returns>
-        protected override object DoGetInstance(Type serviceType, string key)
+        protected override object DoGetService(Type serviceType, string key)
         {
-            return key != null ? ResolutionExtensions.Resolve(Container, key, serviceType) : ResolutionExtensions.Resolve(Container, serviceType);
+            return key != null ? ResolutionExtensions.ResolveNamed(Container, key, serviceType) : ResolutionExtensions.Resolve(Container, serviceType);
         }
 
         /// <summary>
@@ -139,10 +139,10 @@ namespace MvcExtensions.Autofac
         /// </summary>
         /// <param name="serviceType">Type of the service.</param>
         /// <returns></returns>
-        protected override IEnumerable<object> DoGetAllInstances(Type serviceType)
+        protected override IEnumerable<object> DoGetServices(Type serviceType)
         {
             Type type = typeof(IEnumerable<>).MakeGenericType(serviceType);
-
+            
             object instances = ResolutionExtensions.Resolve(Container, type);
 
             return ((IEnumerable)instances).Cast<object>();
