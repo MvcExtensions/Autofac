@@ -19,9 +19,11 @@ namespace MvcExtensions.Autofac.Tests
         public void Should_be_able_to_create_adapter()
         {
             var buildManager = new Mock<IBuildManager>();
+            var bootStrapperTaskRegistery = new Mock<IBootstrapperTasksRegistry>();
+            var perRequestTaskRegistery = new Mock<IPerRequestTasksRegistry>();
             buildManager.SetupGet(bm => bm.Assemblies).Returns(new[] { GetType().Assembly });
 
-            var bootstrapper = new AutofacBootstrapper(buildManager.Object);
+            var bootstrapper = new AutofacBootstrapper(buildManager.Object, bootStrapperTaskRegistery.Object, perRequestTaskRegistery.Object);
 
             Assert.IsType<AutofacAdapter>(bootstrapper.Adapter);
         }
@@ -30,11 +32,13 @@ namespace MvcExtensions.Autofac.Tests
         public void Should_be_able_to_load_modules()
         {
             var buildManager = new Mock<IBuildManager>();
+            var bootStrapperTaskRegistery = new Mock<IBootstrapperTasksRegistry>();
+            var perRequestTaskRegistery = new Mock<IPerRequestTasksRegistry>();
             buildManager.SetupGet(bm => bm.ConcreteTypes).Returns(new[] { typeof(DummyModule) });
 
             DummyModule.Configured = false;
 
-            var bootstrapper = new AutofacBootstrapper(buildManager.Object);
+            var bootstrapper = new AutofacBootstrapper(buildManager.Object, bootStrapperTaskRegistery.Object, perRequestTaskRegistery.Object);
 
             Assert.NotNull(bootstrapper.Adapter);
 
