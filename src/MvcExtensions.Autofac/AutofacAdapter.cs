@@ -11,17 +11,15 @@ namespace MvcExtensions.Autofac
     using System.Collections;
     using System.Collections.Generic;
     using System.Linq;
-
-    using ContainerBuilder = global::Autofac.ContainerBuilder;
-    using ILifetimeScope = global::Autofac.ILifetimeScope;
-    using RegisterExtensions = global::Autofac.RegistrationExtensions;
-    using ResolutionExtensions = global::Autofac.ResolutionExtensions;
+    using global::Autofac;
 
     /// <summary>
     /// Defines an adapter class which is backed by Autofac <seealso cref="Container">Container</seealso>.
     /// </summary>
     public class AutofacAdapter : ContainerAdapter
     {
+        private ILifetimeScopeProvider lifetimeScopeProvider;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="AutofacAdapter"/> class.
         /// </summary>
@@ -43,6 +41,19 @@ namespace MvcExtensions.Autofac
             private set;
         }
 
+        private ILifetimeScope RequestLifetimeScope
+        {
+            get
+            {
+                if (lifetimeScopeProvider == null)
+                {
+                    lifetimeScopeProvider = new RequestLifetimeScopeProvider(Container);
+                }
+
+                return lifetimeScopeProvider.GetLifetimeScope();
+            }
+        }
+
         /// <summary>
         /// Registers the service and its implementation with the lifetime behavior.
         /// </summary>
@@ -58,7 +69,7 @@ namespace MvcExtensions.Autofac
 
             var builder = new ContainerBuilder();
 
-            var registration = RegisterExtensions.RegisterType(builder, implementationType).As(serviceType);
+            var registration = builder.RegisterType(implementationType).As(serviceType);
 
             if (!string.IsNullOrEmpty(key))
             {
@@ -68,7 +79,7 @@ namespace MvcExtensions.Autofac
             switch (lifetime)
             {
                 case LifetimeType.PerRequest:
-                    registration.InstancePerLifetimeScope();
+                    registration.InstancePerHttpRequest();
                     break;
                 case LifetimeType.Singleton:
                     registration.SingleInstance();
@@ -99,11 +110,11 @@ namespace MvcExtensions.Autofac
 
             if (string.IsNullOrEmpty(key))
             {
-                RegisterExtensions.RegisterInstance(builder, instance).As(serviceType).ExternallyOwned();
+                builder.RegisterInstance(instance).As(serviceType).ExternallyOwned();
             }
             else
             {
-                RegisterExtensions.RegisterInstance(builder, instance).Named(key, serviceType).As(serviceType).ExternallyOwned();
+                builder.RegisterInstance(instance).Named(key, serviceType).As(serviceType).ExternallyOwned();
             }
 
             builder.Update(Container.ComponentRegistry);
@@ -119,7 +130,7 @@ namespace MvcExtensions.Autofac
         {
             if (instance != null)
             {
-                ResolutionExtensions.InjectUnsetProperties(Container, instance);
+                RequestLifetimeScope.InjectUnsetProperties(instance);
             }
         }
 
@@ -131,7 +142,7 @@ namespace MvcExtensions.Autofac
         /// <returns></returns>
         protected override object DoGetService(Type serviceType, string key)
         {
-            return key != null ? ResolutionExtensions.ResolveNamed(Container, key, serviceType) : ResolutionExtensions.Resolve(Container, serviceType);
+            return key != null ? RequestLifetimeScope.ResolveNamed(key, serviceType) : RequestLifetimeScope.Resolve(serviceType);
         }
 
         /// <summary>
@@ -142,8 +153,8 @@ namespace MvcExtensions.Autofac
         protected override IEnumerable<object> DoGetServices(Type serviceType)
         {
             Type type = typeof(IEnumerable<>).MakeGenericType(serviceType);
-            
-            object instances = ResolutionExtensions.Resolve(Container, type);
+
+            object instances = RequestLifetimeScope.Resolve(type);
 
             return ((IEnumerable)instances).Cast<object>();
         }

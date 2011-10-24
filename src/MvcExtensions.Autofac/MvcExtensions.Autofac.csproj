@@ -65,6 +65,9 @@
     <Compile Include="AutofacBootstrapper.cs" />
     <Compile Include="AutofacMvcApplication.cs" />
     <Compile Include="GlobalSuppressions.cs" />
+    <Compile Include="ILifetimeScopeProvider.cs" />
+    <Compile Include="RegistrationExtensions.cs" />
+    <Compile Include="RequestLifetimeScopeProvider.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -79,6 +82,7 @@
       <Name>MvcExtensions</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

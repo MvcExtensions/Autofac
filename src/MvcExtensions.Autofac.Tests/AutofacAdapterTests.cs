@@ -7,19 +7,17 @@
 
 namespace MvcExtensions.Autofac.Tests
 {
+    using System.Collections;
+    using System.Collections.Generic;
+    using System.Web;
     using Moq;
+    
     using Xunit;
     using Xunit.Extensions;
-
-    using ContainerBuilder = global::Autofac.ContainerBuilder;
-    using CurrentScopeLifetime = global::Autofac.Core.Lifetime.CurrentScopeLifetime;
-    using IComponentRegistration = global::Autofac.Core.IComponentRegistration;
-    using ILifetimeScope = global::Autofac.ILifetimeScope;
-    using InstanceOwnership = global::Autofac.Core.InstanceOwnership;
-    using InstanceSharing = global::Autofac.Core.InstanceSharing;
-    using KeyedService = global::Autofac.Core.KeyedService;
-    using RootScopeLifetime = global::Autofac.Core.Lifetime.RootScopeLifetime;
-    using TypedService = global::Autofac.Core.TypedService;
+    
+    using global::Autofac;
+    using global::Autofac.Core;
+    using global::Autofac.Core.Lifetime;
 
     public class AutofacAdapterTests
     {
@@ -27,7 +25,11 @@ namespace MvcExtensions.Autofac.Tests
 
         public AutofacAdapterTests()
         {
-            adapter = new AutofacAdapter(new ContainerBuilder().Build());
+            var httpContextMock = new Mock<HttpContextBase>();
+            httpContextMock.Setup(x => x.Items).Returns(new Hashtable());
+            var builder = new ContainerBuilder();
+            builder.Register(c => httpContextMock.Object).As<HttpContextBase>().InstancePerDependency();
+            adapter = new AutofacAdapter(builder.Build());
         }
 
         [Fact]
@@ -60,7 +62,7 @@ namespace MvcExtensions.Autofac.Tests
             if (lifetime == LifetimeType.PerRequest)
             {
                 Assert.Equal(registration.Sharing, InstanceSharing.Shared);
-                Assert.IsType<CurrentScopeLifetime>(registration.Lifetime);
+                Assert.IsType<MatchingScopeLifetime>(registration.Lifetime);
             }
             else if (lifetime == LifetimeType.Singleton)
             {
@@ -81,7 +83,7 @@ namespace MvcExtensions.Autofac.Tests
         {
             adapter.RegisterInstance(key, typeof(DummyObject), new DummyObject());
 
-            var registry = adapter.Container.ComponentRegistry;
+            IComponentRegistry registry = adapter.Container.ComponentRegistry;
             IComponentRegistration registration;
 
             if (string.IsNullOrEmpty(key))
@@ -130,18 +132,26 @@ namespace MvcExtensions.Autofac.Tests
         {
             adapter.RegisterAsTransient<DummyObject>();
 
-            var instances = adapter.GetServices(typeof(DummyObject));
+            IEnumerable<object> instances = adapter.GetServices(typeof(DummyObject));
 
             Assert.NotEmpty(instances);
         }
 
+        #region Nested type: DummyObject
         public class DummyObject
         {
         }
+        #endregion
 
+        #region Nested type: DummyObject2
         public class DummyObject2
         {
-            public DummyObject Dummy { get; set; }
+            public DummyObject Dummy
+            {
+                get;
+                set;
+            }
         }
+        #endregion
     }
 }

@@ -9,9 +9,8 @@ namespace MvcExtensions.Autofac.Tests
 {
     using Moq;
     using Xunit;
-
-    using IComponentRegistry = global::Autofac.Core.IComponentRegistry;
-    using IModule = global::Autofac.Core.IModule;
+    
+    using global::Autofac.Core;
 
     public class AutofacBootstrapperTests
     {
@@ -45,14 +44,22 @@ namespace MvcExtensions.Autofac.Tests
             Assert.True(DummyModule.Configured);
         }
 
+        #region Nested type: DummyModule
         private sealed class DummyModule : IModule
         {
-            public static bool Configured { get; set; }
+            public static bool Configured
+            {
+                get;
+                set;
+            }
 
+            #region IModule Members
             public void Configure(IComponentRegistry componentRegistry)
             {
                 Configured = true;
             }
+            #endregion
         }
+        #endregion
     }
 }

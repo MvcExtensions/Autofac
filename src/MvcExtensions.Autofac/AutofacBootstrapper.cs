@@ -11,10 +11,8 @@ namespace MvcExtensions.Autofac
     using System.Linq;
     using System.Web;
 
-    using ContainerBuilder = global::Autofac.ContainerBuilder;
-    using ILifetimeScope = global::Autofac.ILifetimeScope;
-    using IModule = global::Autofac.Core.IModule;
-    using RegisterExtension = global::Autofac.RegistrationExtensions;
+    using global::Autofac;
+    using global::Autofac.Core;
 
     /// <summary>
     /// Defines a <seealso cref="Bootstrapper">Bootstrapper</seealso> which is backed by <seealso cref="AutofacAdapter"/>.
@@ -40,11 +38,11 @@ namespace MvcExtensions.Autofac
         /// <returns></returns>
         protected override ContainerAdapter CreateAdapter()
         {
-            ContainerBuilder builder = new ContainerBuilder();
+            var builder = new ContainerBuilder();
 
-            RegisterExtension.Register(builder, c => new HttpContextWrapper(HttpContext.Current)).As<HttpContextBase>().InstancePerDependency();
+            builder.Register(c => new HttpContextWrapper(HttpContext.Current)).As<HttpContextBase>().InstancePerDependency();
 
-            AutofacAdapter adapter = new AutofacAdapter(builder.Build());
+            var adapter = new AutofacAdapter(builder.Build());
 
             return adapter;
         }
@@ -54,11 +52,11 @@ namespace MvcExtensions.Autofac
         /// </summary>
         protected override void LoadModules()
         {
-            ContainerBuilder builder = new ContainerBuilder();
+            var builder = new ContainerBuilder();
 
             BuildManager.ConcreteTypes
-                        .Where(type => moduleType.IsAssignableFrom(type) && type.HasDefaultConstructor())
-                        .Each(type => RegisterExtension.RegisterModule(builder, Activator.CreateInstance(type) as IModule));
+                .Where(type => moduleType.IsAssignableFrom(type) && type.HasDefaultConstructor())
+                .Each(type => builder.RegisterModule(Activator.CreateInstance(type) as IModule));
 
             ILifetimeScope container = ((AutofacAdapter)Adapter).Container;
 

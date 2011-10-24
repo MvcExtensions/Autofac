@@ -6,16 +6,32 @@
 #endregion
 
 namespace MvcExtensions.Autofac
-{    
+{
+    using System;
     using System.Web;
-
-    using RegisterExtensions = global::Autofac.RegistrationExtensions;
 
     /// <summary>
     /// Defines a <see cref="HttpApplication"/> which is uses <seealso cref="AutofacBootstrapper"/>.
     /// </summary>
     public class AutofacMvcApplication : ExtendedMvcApplication
     {
+        private static ILifetimeScopeProvider lifetimeScopeProvider;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AutofacMvcApplication"/> class.
+        /// </summary>
+        public AutofacMvcApplication()
+        {
+            EndRequest += OnEndRequest;
+        }
+
+        internal static void SetLifetimeScopeProvider(ILifetimeScopeProvider scopeProvider)
+        {
+            Invariant.IsNotNull(scopeProvider, "scopeProvider");
+
+            lifetimeScopeProvider = scopeProvider;
+        }
+
         /// <summary>
         /// Creates the bootstrapper.
         /// </summary>
@@ -23,6 +39,14 @@ namespace MvcExtensions.Autofac
         protected override IBootstrapper CreateBootstrapper()
         {
             return new AutofacBootstrapper(BuildManagerWrapper.Current, BootstrapperTasksRegistry.Current, PerRequestTasksRegistry.Current);
-        }        
+        }
+
+        private static void OnEndRequest(object sender, EventArgs e)
+        {
+            if (lifetimeScopeProvider != null)
+            {
+                lifetimeScopeProvider.EndLifetimeScope();
+            }
+        }
     }
 }
