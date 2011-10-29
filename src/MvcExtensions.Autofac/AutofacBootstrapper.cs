@@ -40,8 +40,6 @@ namespace MvcExtensions.Autofac
         {
             var builder = new ContainerBuilder();
 
-            builder.Register(c => new HttpContextWrapper(HttpContext.Current)).As<HttpContextBase>().InstancePerDependency();
-
             var adapter = new AutofacAdapter(builder.Build());
 
             return adapter;
