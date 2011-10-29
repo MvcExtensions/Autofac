@@ -127,7 +127,7 @@ namespace MvcExtensions.Autofac
         /// <returns></returns>
         protected override object DoGetService(Type serviceType)
         {
-            return RequestLifetimeScope.Resolve(serviceType);
+            return RequestLifetimeScope.ResolveOptional(serviceType);
         }
 
         /// <summary>
@@ -141,7 +141,7 @@ namespace MvcExtensions.Autofac
 
             object instances = RequestLifetimeScope.Resolve(type);
 
-            return ((IEnumerable)instances).Cast<object>();
+            return (IEnumerable<object>)instances;
         }
 
         /// <summary>
