@@ -120,14 +120,6 @@ namespace MvcExtensions.Autofac.Tests
         }
 
         [Fact]
-        public void Should_be_able_to_get_instance_by_type_and_key()
-        {
-            adapter.RegisterType("foo", typeof(DummyObject), typeof(DummyObject), LifetimeType.Singleton);
-
-            Assert.NotNull(adapter.GetService<DummyObject>("foo"));
-        }
-
-        [Fact]
         public void Should_be_able_to_get_all_instances()
         {
             adapter.RegisterAsTransient<DummyObject>();

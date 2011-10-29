@@ -142,7 +142,7 @@ namespace MvcExtensions.Autofac
         /// <returns></returns>
         protected override object DoGetService(Type serviceType, string key)
         {
-            return key != null ? RequestLifetimeScope.ResolveNamed(key, serviceType) : RequestLifetimeScope.Resolve(serviceType);
+            return RequestLifetimeScope.Resolve(serviceType);
         }
 
         /// <summary>

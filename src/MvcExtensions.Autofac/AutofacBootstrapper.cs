@@ -8,6 +8,7 @@
 namespace MvcExtensions.Autofac
 {
     using System;
+    using System.Collections.Generic;
     using System.Linq;
     using System.Web;
 
@@ -56,7 +57,9 @@ namespace MvcExtensions.Autofac
 
             BuildManager.ConcreteTypes
                 .Where(type => moduleType.IsAssignableFrom(type) && type.HasDefaultConstructor())
-                .Each(type => builder.RegisterModule(Activator.CreateInstance(type) as IModule));
+                .Select(Activator.CreateInstance)
+                .Cast<IModule>()
+                .Each(builder.RegisterModule);
 
             ILifetimeScope container = ((AutofacAdapter)Adapter).Container;
 
