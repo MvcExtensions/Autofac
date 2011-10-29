@@ -9,7 +9,6 @@ namespace MvcExtensions.Autofac
 {
     using System;
     using System.Linq;
-    using System.Web;
 
     using global::Autofac;
     using global::Autofac.Core;
