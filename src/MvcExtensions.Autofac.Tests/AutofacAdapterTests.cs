@@ -7,9 +7,11 @@
 
 namespace MvcExtensions.Autofac.Tests
 {
-    using System.Collections;
+    using System;
     using System.Collections.Generic;
+    using System.IO;
     using System.Web;
+    
     using Moq;
     
     using Xunit;
@@ -25,11 +27,7 @@ namespace MvcExtensions.Autofac.Tests
 
         public AutofacAdapterTests()
         {
-            var httpContextMock = new Mock<HttpContextBase>();
-            httpContextMock.Setup(x => x.Items).Returns(new Hashtable());
-            var builder = new ContainerBuilder();
-            builder.Register(c => httpContextMock.Object).As<HttpContextBase>().InstancePerDependency();
-            adapter = new AutofacAdapter(builder.Build());
+            adapter = new AutofacAdapter(new ContainerBuilder().Build());
         }
 
         [Fact]
@@ -93,31 +91,50 @@ namespace MvcExtensions.Autofac.Tests
         [Fact]
         public void Should_be_able_to_inject()
         {
-            adapter.RegisterAsTransient<DummyObject>();
+            InHttpContext(
+                () =>
+                    {
+                        adapter.RegisterAsTransient<DummyObject>();
 
-            var dummy = new DummyObject2();
+                        var dummy = new DummyObject2();
 
-            adapter.Inject(dummy);
+                        adapter.Inject(dummy);
 
-            Assert.NotNull(dummy.Dummy);
+                        Assert.NotNull(dummy.Dummy);
+                    });
         }
 
         [Fact]
         public void Should_be_able_to_get_instance_by_type()
         {
-            adapter.RegisterAsSingleton<DummyObject>();
+            InHttpContext(
+                () =>
+                    {
+                        adapter.RegisterAsSingleton<DummyObject>();
 
-            Assert.NotNull(adapter.GetService(typeof(DummyObject)));
+                        Assert.NotNull(adapter.GetService(typeof(DummyObject)));
+                    });
         }
 
         [Fact]
         public void Should_be_able_to_get_all_instances()
         {
-            adapter.RegisterAsTransient<DummyObject>();
+            InHttpContext(
+                () =>
+                    {
+                        adapter.RegisterAsTransient<DummyObject>();
 
-            IEnumerable<object> instances = adapter.GetServices(typeof(DummyObject));
+                        IEnumerable<object> instances = adapter.GetServices(typeof(DummyObject));
 
-            Assert.NotEmpty(instances);
+                        Assert.NotEmpty(instances);
+                    });
+        }
+
+        private static void InHttpContext(Action action)
+        {
+            HttpContext.Current = new HttpContext(new HttpRequest(string.Empty, "http://example.com", string.Empty), new HttpResponse(new StringWriter()));
+            action();
+            HttpContext.Current = null;
         }
 
         #region Nested type: DummyObject
