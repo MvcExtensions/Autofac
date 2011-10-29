@@ -51,7 +51,7 @@ namespace MvcExtensions.Autofac.Tests
         [InlineData(LifetimeType.PerRequest)]
         public void Should_be_able_to_register_with_lifetime_type(LifetimeType lifetime)
         {
-            adapter.RegisterType(null, typeof(DummyObject), typeof(DummyObject), lifetime);
+            adapter.RegisterType(typeof(DummyObject), typeof(DummyObject), lifetime);
 
             IComponentRegistration registration;
 
@@ -76,24 +76,15 @@ namespace MvcExtensions.Autofac.Tests
             }
         }
 
-        [Theory]
-        [InlineData("foo")]
-        [InlineData("")]
-        public void Should_be_able_to_register_instance(string key)
+        [Fact]
+        public void Should_be_able_to_register_instance()
         {
-            adapter.RegisterInstance(key, typeof(DummyObject), new DummyObject());
+            adapter.RegisterInstance(typeof(DummyObject), new DummyObject());
 
             IComponentRegistry registry = adapter.Container.ComponentRegistry;
             IComponentRegistration registration;
-
-            if (string.IsNullOrEmpty(key))
-            {
-                registry.TryGetRegistration(new TypedService(typeof(DummyObject)), out registration);
-            }
-            else
-            {
-                registry.TryGetRegistration(new KeyedService(key, typeof(DummyObject)), out registration);
-            }
+            
+            registry.TryGetRegistration(new TypedService(typeof(DummyObject)), out registration);
 
             Assert.NotNull(registration);
             Assert.Equal(registration.Ownership, InstanceOwnership.ExternallyOwned);

@@ -57,12 +57,11 @@ namespace MvcExtensions.Autofac
         /// <summary>
         /// Registers the service and its implementation with the lifetime behavior.
         /// </summary>
-        /// <param name="key">The key.</param>
         /// <param name="serviceType">Type of the service.</param>
         /// <param name="implementationType">Type of the implementation.</param>
         /// <param name="lifetime">The lifetime of the service.</param>
         /// <returns></returns>
-        public override IServiceRegistrar RegisterType(string key, Type serviceType, Type implementationType, LifetimeType lifetime)
+        public override IServiceRegistrar RegisterType(Type serviceType, Type implementationType, LifetimeType lifetime)
         {
             Invariant.IsNotNull(serviceType, "serviceType");
             Invariant.IsNotNull(implementationType, "implementationType");
@@ -70,11 +69,6 @@ namespace MvcExtensions.Autofac
             var builder = new ContainerBuilder();
 
             var registration = builder.RegisterType(implementationType).As(serviceType);
-
-            if (!string.IsNullOrEmpty(key))
-            {
-                registration = registration.Named(key, serviceType);
-            }
 
             switch (lifetime)
             {
@@ -97,25 +91,17 @@ namespace MvcExtensions.Autofac
         /// <summary>
         /// Registers the instance as singleton.
         /// </summary>
-        /// <param name="key">The key.</param>
         /// <param name="serviceType">Type of the service.</param>
         /// <param name="instance">The instance.</param>
         /// <returns></returns>
-        public override IServiceRegistrar RegisterInstance(string key, Type serviceType, object instance)
+        public override IServiceRegistrar RegisterInstance(Type serviceType, object instance)
         {
             Invariant.IsNotNull(serviceType, "serviceType");
             Invariant.IsNotNull(instance, "instance");
 
             var builder = new ContainerBuilder();
-
-            if (string.IsNullOrEmpty(key))
-            {
-                builder.RegisterInstance(instance).As(serviceType).ExternallyOwned();
-            }
-            else
-            {
-                builder.RegisterInstance(instance).Named(key, serviceType).As(serviceType).ExternallyOwned();
-            }
+            
+            builder.RegisterInstance(instance).As(serviceType).ExternallyOwned();
 
             builder.Update(Container.ComponentRegistry);
 
@@ -135,12 +121,11 @@ namespace MvcExtensions.Autofac
         }
 
         /// <summary>
-        /// Gets the matching instance for the given type and key.
+        /// Gets the matching instance for the given type.
         /// </summary>
         /// <param name="serviceType">Type of the service.</param>
-        /// <param name="key">The key.</param>
         /// <returns></returns>
-        protected override object DoGetService(Type serviceType, string key)
+        protected override object DoGetService(Type serviceType)
         {
             return RequestLifetimeScope.Resolve(serviceType);
         }
