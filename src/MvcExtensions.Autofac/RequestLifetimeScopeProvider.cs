@@ -31,7 +31,11 @@
 
                 return (ILifetimeScope)httpContext.Items[lifettymeScopeType];
             }
-            set { HttpContext.Current.Items[lifettymeScopeType] = value; }
+            
+            set
+            {
+                HttpContext.Current.Items[lifettymeScopeType] = value;
+            }
         }
 
         #region ILifetimeScopeProvider Members
