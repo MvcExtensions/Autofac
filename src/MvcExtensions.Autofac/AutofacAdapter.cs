@@ -9,7 +9,7 @@ namespace MvcExtensions.Autofac
 {
     using System;
     using System.Collections.Generic;
-    
+    using System.Web;
     using global::Autofac;
     using global::Autofac.Integration.Mvc;
 
@@ -48,6 +48,11 @@ namespace MvcExtensions.Autofac
                 if (lifetimeScopeProvider == null)
                 {
                     lifetimeScopeProvider = new RequestLifetimeScopeProvider(Container, null);
+                }
+
+                if (HttpContext.Current == null)
+                {
+                    return Container;
                 }
 
                 return lifetimeScopeProvider.GetLifetimeScope();
