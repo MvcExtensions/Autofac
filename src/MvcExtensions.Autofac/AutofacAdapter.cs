@@ -9,9 +9,8 @@ namespace MvcExtensions.Autofac
 {
     using System;
     using System.Collections.Generic;
-    using System.Web;
+    
     using global::Autofac;
-    using global::Autofac.Integration.Mvc;
 
     /// <summary>
     /// Defines an adapter class which is backed by Autofac <seealso cref="Container">Container</seealso>.
@@ -47,12 +46,7 @@ namespace MvcExtensions.Autofac
             {
                 if (lifetimeScopeProvider == null)
                 {
-                    lifetimeScopeProvider = new RequestLifetimeScopeProvider(Container, null);
-                }
-
-                if (HttpContext.Current == null)
-                {
-                    return Container;
+                    lifetimeScopeProvider = new RequestLifetimeScopeProvider(Container);
                 }
 
                 return lifetimeScopeProvider.GetLifetimeScope();

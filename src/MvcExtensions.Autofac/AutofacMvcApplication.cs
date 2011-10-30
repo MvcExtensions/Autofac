@@ -7,6 +7,7 @@
 
 namespace MvcExtensions.Autofac
 {
+    using System;
     using System.Web;
 
     /// <summary>
@@ -14,6 +15,24 @@ namespace MvcExtensions.Autofac
     /// </summary>
     public class AutofacMvcApplication : ExtendedMvcApplication
     {
+        private static ILifetimeScopeProvider lifetimeScopeProvider;
+
+        internal static void SetLifetimeScopeProvider(ILifetimeScopeProvider scopeProvider)
+        {
+            Invariant.IsNotNull(scopeProvider, "scopeProvider");
+
+            lifetimeScopeProvider = scopeProvider;
+        }
+
+        /// <summary>
+        /// Executes custom initialization code after all event handler modules have been added.
+        /// </summary>
+        public override void Init()
+        {
+            base.Init();
+            EndRequest += OnEndRequest;
+        }
+
         /// <summary>
         /// Creates the bootstrapper.
         /// </summary>
@@ -21,6 +40,14 @@ namespace MvcExtensions.Autofac
         protected override IBootstrapper CreateBootstrapper()
         {
             return new AutofacBootstrapper(BuildManagerWrapper.Current, BootstrapperTasksRegistry.Current, PerRequestTasksRegistry.Current);
+        }
+
+        private static void OnEndRequest(object sender, EventArgs e)
+        {
+            if (lifetimeScopeProvider != null)
+            {
+                lifetimeScopeProvider.EndLifetimeScope();
+            }
         }
     }
 }
