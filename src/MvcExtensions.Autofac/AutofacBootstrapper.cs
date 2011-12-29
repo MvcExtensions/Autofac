@@ -9,6 +9,7 @@ namespace MvcExtensions.Autofac
 {
     using System;
     using System.Linq;
+    using System.Web;
 
     using global::Autofac;
     using global::Autofac.Core;
@@ -38,6 +39,8 @@ namespace MvcExtensions.Autofac
         protected override ContainerAdapter CreateAdapter()
         {
             var builder = new ContainerBuilder();
+            
+            builder.Register(c => new HttpContextWrapper(HttpContext.Current)).As<HttpContextBase>().InstancePerDependency();
 
             var adapter = new AutofacAdapter(builder.Build());
 
