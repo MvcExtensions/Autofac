@@ -8,8 +8,11 @@
 using System;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Web;
+using MvcExtensions.Autofac;
 
 [assembly: AssemblyTitle("MvcExtensions.Autofac")]
 [assembly: AssemblyProduct("MvcExtensions.Autofac")]
 [assembly: CLSCompliant(true)]
 [assembly: Guid("d2508795-a854-4723-81ca-dee3da291db6")]
+[assembly: PreApplicationStartMethod(typeof(AutofacBootstrapper), "Run")]

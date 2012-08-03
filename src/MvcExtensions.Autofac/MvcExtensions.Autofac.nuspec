@@ -9,8 +9,9 @@
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>ASP.NET MVC Extensions is framework developed on top of ASP.NET MVC extensibility point, which allows your IoC Container to rule everywhere.</description>
     <dependencies>
-      <dependency id="Autofac" version="2.6.1.841" />
-      <dependency id="MvcExtensions" version="[2.5.0,3)" />
+      <dependency id="Autofac" version="2.6.3.862" />
+      <dependency id="Microsoft.Web.Infrastructure" version="1.0.0.0" />
+      <dependency id="MvcExtensions" version="[3.0.0-a,3.1)" />
     </dependencies>
   </metadata>
   <files>

@@ -10,7 +10,7 @@ namespace MvcExtensions.Autofac
     using System;
     using System.Linq;
     using System.Web;
-
+    using Microsoft.Web.Infrastructure.DynamicModuleHelper;
     using global::Autofac;
     using global::Autofac.Core;
 
@@ -30,6 +30,16 @@ namespace MvcExtensions.Autofac
         public AutofacBootstrapper(IBuildManager buildManager, IBootstrapperTasksRegistry bootstrapperTasks, IPerRequestTasksRegistry perRequestTasks)
             : base(buildManager, bootstrapperTasks, perRequestTasks)
         {
+        }
+
+        /// <summary>
+        /// Starts this bootstrapper
+        /// </summary>
+        public static void Run()
+        {
+            Current = new AutofacBootstrapper(BuildManagerWrapper.Current, BootstrapperTasksRegistry.Current, PerRequestTasksRegistry.Current);
+            DynamicModuleUtility.RegisterModule(typeof(Module));
+            DynamicModuleUtility.RegisterModule(typeof(PerWebRequestLifestyleModule));
         }
 
         /// <summary>

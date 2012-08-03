@@ -42,7 +42,7 @@ namespace MvcExtensions.Autofac
 
         private ILifetimeScope RequestLifetimeScope
         {
-            get
+            get 
             {
                 if (lifetimeScopeProvider == null)
                 {
@@ -136,11 +136,8 @@ namespace MvcExtensions.Autofac
         /// <returns></returns>
         public override IEnumerable<object> GetServices(Type serviceType)
         {
-            Type type = typeof(IEnumerable<>).MakeGenericType(serviceType);
-
-            object instances = RequestLifetimeScope.Resolve(type);
-
-            return (IEnumerable<object>)instances;
+            var type = typeof(IEnumerable<>).MakeGenericType(serviceType);
+            return (IEnumerable<object>)RequestLifetimeScope.Resolve(type);
         }
 
         /// <summary>

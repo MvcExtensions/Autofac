@@ -15,8 +15,8 @@
             Invariant.IsNotNull(container, "container");
 
             this.container = container;
-            
-            AutofacMvcApplication.SetLifetimeScopeProvider(this);
+
+            PerWebRequestLifestyleModule.SetLifetimeScopeProvider(this);
         }
 
         private ILifetimeScope LifetimeScope
