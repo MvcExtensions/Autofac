@@ -1,4 +1,11 @@
-﻿namespace MvcExtensions.Autofac
+﻿#region Copyright
+// Copyright (c) 2009 - 2011, Kazi Manzur Rashid <kazimanzurrashid@gmail.com>, hazzik <hazzik@gmail.com>.
+// This source is subject to the Microsoft Public License. 
+// See http://www.microsoft.com/opensource/licenses.mspx#Ms-PL. 
+// All other rights reserved.
+#endregion
+
+namespace MvcExtensions.Autofac
 {
     using System;
     using System.Web;
@@ -15,8 +22,8 @@
             Invariant.IsNotNull(container, "container");
 
             this.container = container;
-            
-            AutofacMvcApplication.SetLifetimeScopeProvider(this);
+
+            PerWebRequestLifestyleModule.SetLifetimeScopeProvider(this);
         }
 
         private ILifetimeScope LifetimeScope
@@ -31,7 +38,7 @@
 
                 return (ILifetimeScope)httpContext.Items[lifettymeScopeType];
             }
-            
+
             set
             {
                 HttpContext.Current.Items[lifettymeScopeType] = value;
@@ -39,7 +46,6 @@
         }
 
         #region ILifetimeScopeProvider Members
-
         public ILifetimeScope GetLifetimeScope()
         {
             if (LifetimeScope == null)
@@ -58,13 +64,12 @@
 
         public void EndLifetimeScope()
         {
-            ILifetimeScope lifetimeScope = LifetimeScope;
+            var lifetimeScope = LifetimeScope;
             if (lifetimeScope != null)
             {
                 lifetimeScope.Dispose();
             }
         }
-
         #endregion
     }
 }

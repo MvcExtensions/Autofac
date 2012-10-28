@@ -1,5 +1,5 @@
 ﻿#region Copyright
-// Copyright (c) 2009 - 2010, Kazi Manzur Rashid <kazimanzurrashid@gmail.com>.
+// Copyright (c) 2009 - 2011, Kazi Manzur Rashid <kazimanzurrashid@gmail.com>, hazzik <hazzik@gmail.com>.
 // This source is subject to the Microsoft Public License. 
 // See http://www.microsoft.com/opensource/licenses.mspx#Ms-PL. 
 // All other rights reserved.
@@ -11,36 +11,35 @@ namespace MvcExtensions.Autofac
     using System.Web;
 
     /// <summary>
-    /// Defines a <see cref="HttpApplication"/> which is uses <seealso cref="AutofacBootstrapper"/>.
+    /// PerWebRequestLifestyle module
     /// </summary>
-    public class AutofacMvcApplication : ExtendedMvcApplication
+    public class PerWebRequestLifestyleModule : IHttpModule
     {
         private static ILifetimeScopeProvider lifetimeScopeProvider;
 
+        #region IHttpModule Members
         /// <summary>
-        /// Executes custom initialization code after all event handler modules have been added.
+        /// Init http modole
         /// </summary>
-        public override void Init()
+        /// <param name="context"></param>
+        public void Init(HttpApplication context)
         {
-            base.Init();
-            
-            EndRequest += OnEndRequest;
+            context.EndRequest += OnEndRequest;
         }
+
+        /// <summary>
+        /// Dispose object
+        /// </summary>
+        public void Dispose()
+        {
+        }
+        #endregion
 
         internal static void SetLifetimeScopeProvider(ILifetimeScopeProvider scopeProvider)
         {
             Invariant.IsNotNull(scopeProvider, "scopeProvider");
 
             lifetimeScopeProvider = scopeProvider;
-        }
-
-        /// <summary>
-        /// Creates the bootstrapper.
-        /// </summary>
-        /// <returns></returns>
-        protected override IBootstrapper CreateBootstrapper()
-        {
-            return new AutofacBootstrapper(BuildManagerWrapper.Current, BootstrapperTasksRegistry.Current, PerRequestTasksRegistry.Current);
         }
 
         private static void OnEndRequest(object sender, EventArgs e)
