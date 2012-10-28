@@ -4,6 +4,7 @@
 // See http://www.microsoft.com/opensource/licenses.mspx#Ms-PL. 
 // All other rights reserved.
 #endregion
+
 namespace MvcExtensions.Autofac
 {
     using System;
@@ -16,6 +17,7 @@ namespace MvcExtensions.Autofac
     {
         private static ILifetimeScopeProvider lifetimeScopeProvider;
 
+        #region IHttpModule Members
         /// <summary>
         /// Init http modole
         /// </summary>
@@ -31,6 +33,7 @@ namespace MvcExtensions.Autofac
         public void Dispose()
         {
         }
+        #endregion
 
         internal static void SetLifetimeScopeProvider(ILifetimeScopeProvider scopeProvider)
         {

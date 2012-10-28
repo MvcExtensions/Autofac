@@ -1,5 +1,5 @@
 #region Copyright
-// Copyright (c) 2009 - 2010, Kazi Manzur Rashid <kazimanzurrashid@gmail.com>.
+// Copyright (c) 2009 - 2011, Kazi Manzur Rashid <kazimanzurrashid@gmail.com>, hazzik <hazzik@gmail.com>.
 // This source is subject to the Microsoft Public License. 
 // See http://www.microsoft.com/opensource/licenses.mspx#Ms-PL. 
 // All other rights reserved.
@@ -9,7 +9,6 @@ namespace MvcExtensions.Autofac
 {
     using System;
     using System.Collections.Generic;
-    
     using global::Autofac;
 
     /// <summary>
@@ -42,7 +41,7 @@ namespace MvcExtensions.Autofac
 
         private ILifetimeScope RequestLifetimeScope
         {
-            get 
+            get
             {
                 if (lifetimeScopeProvider == null)
                 {
@@ -99,7 +98,7 @@ namespace MvcExtensions.Autofac
             Invariant.IsNotNull(instance, "instance");
 
             var builder = new ContainerBuilder();
-            
+
             builder.RegisterInstance(instance).As(serviceType).ExternallyOwned();
 
             builder.Update(Container.ComponentRegistry);

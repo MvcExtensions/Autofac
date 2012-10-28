@@ -59,7 +59,11 @@
       <HintPath>..\..\packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
     </Reference>
     <Reference Include="MvcExtensions, Version=3.0.0.0, Culture=neutral, PublicKeyToken=ee6190c4449c24bc, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\MvcExtensions.3.0.0-alpha1000\lib\net40\MvcExtensions.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\packages\MvcExtensions.3.0.0-alpha1014\lib\net40\MvcExtensions.dll</HintPath>
+    </Reference>
+    <Reference Include="MvcExtensions.FluentMetadata">
+      <HintPath>..\..\packages\MvcExtensions.FluentMetadata.3.0.0-alpha1014\lib\net40\MvcExtensions.FluentMetadata.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
@@ -92,7 +96,9 @@
     <None Include="..\SharedFiles\MvcExtensions.snk">
       <Link>MvcExtensions.snk</Link>
     </None>
-    <None Include="MvcExtensions.Autofac.nuspec" />
+    <None Include="MvcExtensions.Autofac.nuspec">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="packages.config" />
     <None Include="Settings.StyleCop" />
   </ItemGroup>

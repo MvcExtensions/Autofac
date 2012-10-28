@@ -50,7 +50,11 @@
       <HintPath>..\..\packages\Moq.4.0.10827\lib\NET40\Moq.dll</HintPath>
     </Reference>
     <Reference Include="MvcExtensions, Version=3.0.0.0, Culture=neutral, PublicKeyToken=ee6190c4449c24bc, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\MvcExtensions.3.0.0-alpha1000\lib\net40\MvcExtensions.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\packages\MvcExtensions.3.0.0-alpha1014\lib\net40\MvcExtensions.dll</HintPath>
+    </Reference>
+    <Reference Include="MvcExtensions.FluentMetadata">
+      <HintPath>..\..\packages\MvcExtensions.FluentMetadata.3.0.0-alpha1014\lib\net40\MvcExtensions.FluentMetadata.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
