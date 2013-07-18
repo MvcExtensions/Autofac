@@ -46,7 +46,7 @@ namespace MvcExtensions.Autofac
 
             startWasCalled = true;
             Current = new AutofacBootstrapper(BuildManagerWrapper.Current, BootstrapperTasksRegistry.Current, PerRequestTasksRegistry.Current);
-            DynamicModuleUtility.RegisterModule(typeof(Module));
+            DynamicModuleUtility.RegisterModule(typeof(BootstrapperModule));
             DynamicModuleUtility.RegisterModule(typeof(PerWebRequestLifestyleModule));
         }
 
